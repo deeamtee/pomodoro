@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useContext } from 'react';
 import { Task, TimerSettings, AppSettings, TimerState, TimerMode } from '../types';
 
 interface AppContextType {
@@ -22,7 +22,12 @@ interface TelegramData {
   isInTelegram: boolean;
   isDarkMode: boolean;
   themeColor: string;
-  user: any;
+  user: {
+    id: number;
+    first_name: string;
+    last_name?: string;
+    username?: string;
+  } | null;
 }
 
 interface AppProviderProps {
@@ -50,17 +55,49 @@ const defaultTimerState: TimerState = {
   currentSession: 1,
 };
 
+const APP_SETTINGS_KEY = 'pomodoro_app_settings_v1';
+
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<AppProviderProps> = ({ children, initialTelegramData }) => {
+  const loadAppSettings = () => {
+    try {
+      const saved = localStorage.getItem(APP_SETTINGS_KEY);
+      if (saved) {
+        return { ...defaultAppSettings, ...JSON.parse(saved) };
+      }
+    } catch (e) {
+      // ignore
+    }
+    return {
+      ...defaultAppSettings,
+      darkMode: initialTelegramData.isDarkMode,
+      theme: initialTelegramData.isInTelegram ? initialTelegramData.themeColor : defaultAppSettings.theme,
+    };
+  };
+
   const [tasks, setTasks] = useState<Task[]>([]);
   const [timerSettings, setTimerSettings] = useState<TimerSettings>(defaultTimerSettings);
-  const [appSettings, setAppSettings] = useState<AppSettings>(() => ({
-    ...defaultAppSettings,
-    darkMode: initialTelegramData.isDarkMode,
-    theme: initialTelegramData.isInTelegram ? initialTelegramData.themeColor : defaultAppSettings.theme,
-  }));
+  const [appSettings, setAppSettings] = useState<AppSettings>(loadAppSettings);
   const [timerState, setTimerState] = useState<TimerState>(defaultTimerState);
+
+  // Save appSettings to localStorage on change
+  useEffect(() => {
+    try {
+      localStorage.setItem(APP_SETTINGS_KEY, JSON.stringify(appSettings));
+    } catch (e) {
+      // ignore
+    }
+  }, [appSettings]);
+
+  // Apply dark mode class to the body (fix for browser and Telegram)
+  useEffect(() => {
+    if (appSettings.darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [appSettings.darkMode]);
 
   // Initialize timer based on settings
   useEffect(() => {
@@ -81,11 +118,40 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children, initialTeleg
         timeRemaining: getTimeForCurrentMode(),
       }));
     }
-  }, [timerState.mode, timerSettings]);
+  }, [timerState.mode, timerSettings, timerState.isActive]);
 
   // Timer countdown logic
   useEffect(() => {
     let interval: number | undefined;
+
+    function playSound() {
+      if (appSettings.soundEnabled) {
+        const audio = new window.Audio('https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3');
+        audio.play().catch(e => console.error('Error playing sound:', e));
+      }
+    }
+
+    function handleTimerComplete() {
+      if (timerState.mode === 'work') {
+        const isLongBreakDue = timerState.currentSession % timerSettings.longBreakInterval === 0;
+        setTimerState(prev => ({
+          ...prev,
+          mode: isLongBreakDue ? 'longBreak' : 'shortBreak',
+          isActive: false,
+          timeRemaining: isLongBreakDue
+            ? timerSettings.longBreakMinutes * 60
+            : timerSettings.shortBreakMinutes * 60,
+        }));
+      } else {
+        setTimerState(prev => ({
+          ...prev,
+          mode: 'work',
+          isActive: false,
+          timeRemaining: timerSettings.workMinutes * 60,
+          currentSession: prev.currentSession + 1,
+        }));
+      }
+    }
 
     if (timerState.isActive && timerState.timeRemaining > 0) {
       interval = window.setInterval(() => {
@@ -102,40 +168,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children, initialTeleg
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [timerState.isActive, timerState.timeRemaining]);
-
-  // Play sound when timer completes
-  const playSound = () => {
-    if (appSettings.soundEnabled) {
-      // Play notification sound
-      const audio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3');
-      audio.play().catch(e => console.error('Error playing sound:', e));
-    }
-  };
-
-  // Handle timer completion and cycle to next mode
-  const handleTimerComplete = () => {
-    if (timerState.mode === 'work') {
-      const isLongBreakDue = timerState.currentSession % timerSettings.longBreakInterval === 0;
-      setTimerState(prev => ({
-        ...prev,
-        mode: isLongBreakDue ? 'longBreak' : 'shortBreak',
-        isActive: false,
-        timeRemaining: isLongBreakDue 
-          ? timerSettings.longBreakMinutes * 60 
-          : timerSettings.shortBreakMinutes * 60,
-      }));
-    } else {
-      // After break, go back to work mode and increment session
-      setTimerState(prev => ({
-        ...prev,
-        mode: 'work',
-        isActive: false,
-        timeRemaining: timerSettings.workMinutes * 60,
-        currentSession: prev.currentSession + 1,
-      }));
-    }
-  };
+  }, [timerState.isActive, timerState.timeRemaining, timerState.mode, timerSettings, timerState.currentSession, appSettings.soundEnabled]);
 
   // Task management
   const addTask = (title: string) => {
@@ -198,7 +231,26 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children, initialTeleg
   };
 
   const skipTimer = () => {
-    handleTimerComplete();
+    // Вынесенная внутрь skipTimer логика handleTimerComplete
+    if (timerState.mode === 'work') {
+      const isLongBreakDue = timerState.currentSession % timerSettings.longBreakInterval === 0;
+      setTimerState(prev => ({
+        ...prev,
+        mode: isLongBreakDue ? 'longBreak' : 'shortBreak',
+        isActive: false,
+        timeRemaining: isLongBreakDue
+          ? timerSettings.longBreakMinutes * 60
+          : timerSettings.shortBreakMinutes * 60,
+      }));
+    } else {
+      setTimerState(prev => ({
+        ...prev,
+        mode: 'work',
+        isActive: false,
+        timeRemaining: timerSettings.workMinutes * 60,
+        currentSession: prev.currentSession + 1,
+      }));
+    }
   };
 
   const setTimerMode = (mode: TimerMode) => {

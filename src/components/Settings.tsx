@@ -157,7 +157,7 @@ const TimerSettingSlider: React.FC<TimerSettingSliderProps> = ({
     <div>
       <div className="flex justify-between mb-1">
         <label className="text-sm text-gray-600 dark:text-gray-300">{label}</label>
-        <span className="text-sm font-medium text-gray-700 dark:text-gray-200">{value} min</span>
+        <span className="text-sm font-medium text-gray-700 dark:text-gray-200">{value} {label === 'Sessions before long break' ? 'sessions' : 'min'}</span>
       </div>
       <input
         type="range"
