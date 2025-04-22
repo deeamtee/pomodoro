@@ -65,8 +65,7 @@ const AppContent: React.FC = () => {
 
   return (
     <div
-      className={`flex flex-col min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200`}
-      style={{ height: "100vh" }}
+      className={`flex flex-col justify-between bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200`}
     >
       <div className="flex-1 flex flex-col">{renderTabContent()}</div>
       <Navbar activeTab={activeTab} onTabChange={setActiveTab} />
