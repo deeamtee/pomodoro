@@ -1,3 +1,5 @@
+import { Telegram } from "@twa-dev/types";
+
 /**
  * Initialize Telegram WebApp
  */
@@ -8,7 +10,8 @@ export const initTelegramWebApp = () => {
     
     // Expand the WebApp to full height
     webApp.ready()
-    webApp.expand();
+    // webApp.expand();
+    webApp.requestFullscreen();
     
     // Set the theme based on Telegram's color scheme
     const isThemeDark = webApp.colorScheme === 'dark';
@@ -32,31 +35,8 @@ export const initTelegramWebApp = () => {
   };
 };
 
-// Add Telegram WebApp typings
 declare global {
   interface Window {
-    Telegram?: {
-      WebApp: {
-        expand: () => void;
-        close: () => void;
-        ready: () => void;
-        colorScheme: 'light' | 'dark';
-        themeParams?: {
-          button_color?: string;
-          button_text_color?: string;
-          link_color?: string;
-          bg_color?: string;
-          text_color?: string;
-        };
-        initDataUnsafe?: {
-          user?: {
-            id: number;
-            first_name: string;
-            last_name?: string;
-            username?: string;
-          };
-        };
-      };
-    };
+    Telegram: Telegram;
   }
 }
