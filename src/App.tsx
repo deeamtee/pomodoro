@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { AppProvider } from './context/AppContext';
-import CircularTimer from './components/CircularTimer';
-import TimerControls from './components/TimerControls';
-import ModeSwitcher from './components/ModeSwitcher';
-import TaskList from './components/TaskList';
-import Settings from './components/Settings';
-import Navbar from './components/Navbar';
-import { useApp } from './context/AppContext';
-import { initTelegramWebApp } from './utils/telegramUtils';
+import React, { useState, useEffect } from "react";
+import { AppProvider } from "./context/AppContext";
+import CircularTimer from "./components/CircularTimer";
+import TimerControls from "./components/TimerControls";
+import ModeSwitcher from "./components/ModeSwitcher";
+import TaskList from "./components/TaskList";
+import Settings from "./components/Settings";
+import Navbar from "./components/Navbar";
+import { useApp } from "./context/AppContext";
+import { initTelegramWebApp } from "./utils/telegramUtils";
 
 // Main app with providers
 function App() {
   // Initialize Telegram Web App connection once at the root level
   const telegramData = initTelegramWebApp();
-  
+
   return (
     <AppProvider initialTelegramData={telegramData}>
       <AppContent />
@@ -23,22 +23,22 @@ function App() {
 
 // App content that can access context
 const AppContent: React.FC = () => {
-  const [activeTab, setActiveTab] = useState('timer');
+  const [activeTab, setActiveTab] = useState("timer");
   const { appSettings } = useApp();
 
   // Apply dark mode class to the body
   useEffect(() => {
     if (appSettings.darkMode) {
-      document.documentElement.classList.add('dark');
+      document.documentElement.classList.add("dark");
     } else {
-      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.remove("dark");
     }
   }, [appSettings.darkMode]);
 
   // Render active tab content
   const renderTabContent = () => {
     switch (activeTab) {
-      case 'timer':
+      case "timer":
         return (
           <div className="flex flex-col items-center justify-center min-h-screen pb-16">
             <CircularTimer />
@@ -46,13 +46,13 @@ const AppContent: React.FC = () => {
             <ModeSwitcher />
           </div>
         );
-      case 'tasks':
+      case "tasks":
         return (
           <div className="min-h-screen pb-20 pt-6">
             <TaskList />
           </div>
         );
-      case 'settings':
+      case "settings":
         return (
           <div className="min-h-screen pb-20 pt-6">
             <Settings />
@@ -64,8 +64,11 @@ const AppContent: React.FC = () => {
   };
 
   return (
-    <div className={`bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200 min-h-screen`}>
-      {renderTabContent()}
+    <div
+      className={`flex flex-col min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200`}
+      style={{ height: "100vh" }}
+    >
+      <div className="flex-1 flex flex-col">{renderTabContent()}</div>
       <Navbar activeTab={activeTab} onTabChange={setActiveTab} />
     </div>
   );

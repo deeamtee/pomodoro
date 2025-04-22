@@ -11,7 +11,11 @@ export const initTelegramWebApp = () => {
     // Expand the WebApp to full height
     webApp.ready()
     webApp.expand();
-    // webApp.requestFullscreen();
+    // Используем platform для определения мобильного устройства
+    const mobilePlatforms = ['android', 'ios'];
+    if (mobilePlatforms.includes(webApp.platform) && webApp.requestFullscreen) {
+      webApp.requestFullscreen();
+    }
     
     // Set the theme based on Telegram's color scheme
     const isThemeDark = webApp.colorScheme === 'dark';
