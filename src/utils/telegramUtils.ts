@@ -10,14 +10,15 @@ export const initTelegramWebApp = () => {
     
     // Expand the WebApp to full height
     webApp.ready()
-    // webApp.expand();
-    webApp.requestFullscreen();
+    webApp.expand();
+    // webApp.requestFullscreen();
     
     // Set the theme based on Telegram's color scheme
     const isThemeDark = webApp.colorScheme === 'dark';
     
     // Get Telegram's accent color if available
     const themeColor = webApp.themeParams?.button_color || '#F43F5E';
+
     
     return {
       isInTelegram: true,
