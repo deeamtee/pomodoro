@@ -7,6 +7,7 @@ export const initTelegramWebApp = () => {
     const webApp = window.Telegram.WebApp;
     
     // Expand the WebApp to full height
+    webApp.ready()
     webApp.expand();
     
     // Set the theme based on Telegram's color scheme
