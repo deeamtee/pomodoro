@@ -21,7 +21,7 @@ const TaskList: React.FC = () => {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto mt-8 px-4">
+    <div className="w-full max-w-md mx-auto px-4">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold text-gray-800 dark:text-white">Tasks</h2>
         

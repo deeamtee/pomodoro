@@ -22,7 +22,7 @@ const Settings: React.FC = () => {
   ];
 
   return (
-    <div className="w-full max-w-md mx-auto mt-8 px-4">
+    <div className="w-full max-w-md mx-auto px-4">
       <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">Settings</h2>
       
       <div className="space-y-6">
