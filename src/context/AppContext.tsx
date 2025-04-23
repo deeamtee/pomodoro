@@ -120,7 +120,6 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children, initialTeleg
     }
   }, [timerState.mode, timerSettings, timerState.isActive]);
 
-  // Timer countdown logic
   useEffect(() => {
     let interval: number | undefined;
 
@@ -196,17 +195,14 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children, initialTeleg
     setTasks(prev => prev.filter(task => task.id !== id));
   };
 
-  // Timer settings
   const updateTimerSettings = (settings: Partial<TimerSettings>) => {
     setTimerSettings(prev => ({ ...prev, ...settings }));
   };
 
-  // App settings
   const updateAppSettings = (settings: Partial<AppSettings>) => {
     setAppSettings(prev => ({ ...prev, ...settings }));
   };
 
-  // Timer controls
   const startTimer = () => {
     setTimerState(prev => ({ ...prev, isActive: true }));
   };

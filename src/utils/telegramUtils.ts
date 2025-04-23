@@ -1,26 +1,34 @@
-import { Telegram } from "@twa-dev/types";
+import { Telegram, WebApp } from "@twa-dev/types";
 
-/**
- * Initialize Telegram WebApp
- */
+const getPlatform = (webApp: WebApp) => {
+ if (webApp.platform === 'android' || webApp.platform === 'ios') {
+   return 'mobile';
+ } else {
+   return 'desktop';
+ }
+}
+
 export const initTelegramWebApp = () => {
-  // Check if we're running in Telegram WebApp environment
   if (window.Telegram && window.Telegram.WebApp) {
     const webApp = window.Telegram.WebApp;
     
-    // Expand the WebApp to full height
     webApp.ready()
     webApp.expand();
-    // Используем platform для определения мобильного устройства
-    const mobilePlatforms = ['android', 'ios'];
-    if (mobilePlatforms.includes(webApp.platform) && webApp.requestFullscreen) {
-      webApp.requestFullscreen();
+
+    if (getPlatform(webApp) === 'mobile' && webApp.requestFullscreen) {
+      const version = parseInt(webApp.version);
+      if (version >= 7.7) {
+        webApp.disableVerticalSwipes();
+      }
+
+      if (version >= 8) {
+        webApp.requestFullscreen();
+        webApp.lockOrientation();
+      }
     }
     
-    // Set the theme based on Telegram's color scheme
     const isThemeDark = webApp.colorScheme === 'dark';
     
-    // Get Telegram's accent color if available
     const themeColor = webApp.themeParams?.button_color || '#F43F5E';
 
     
