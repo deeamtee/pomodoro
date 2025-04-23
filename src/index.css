@@ -27,9 +27,9 @@ html, body {
   padding-bottom: var(--tg-safe-area-inset-bottom);
 }
 
-/* .navbar__container {
+.navbar__container {
   position: fixed;
   left: 0;
   right: 0;
-  bottom: 0;
-} */
+  bottom: var(--tg-safe-area-inset-bottom);
+}
