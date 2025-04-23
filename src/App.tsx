@@ -40,7 +40,7 @@ const AppContent: React.FC = () => {
     switch (activeTab) {
       case "timer":
         return (
-          <div className="flex flex-col items-center justify-center min-h-screen pb-16">
+          <div className="flex-1 flex flex-col items-center justify-center pb-16">
             <CircularTimer />
             <TimerControls />
             <ModeSwitcher />
@@ -48,13 +48,13 @@ const AppContent: React.FC = () => {
         );
       case "tasks":
         return (
-          <div className="min-h-screen pb-20 pt-6">
+          <div className="pb-20 pt-16">
             <TaskList />
           </div>
         );
       case "settings":
         return (
-          <div className="min-h-screen pb-20 pt-6">
+          <div className="pb-20 pt-16">
             <Settings />
           </div>
         );
@@ -65,9 +65,11 @@ const AppContent: React.FC = () => {
 
   return (
     <div
-      className={`flex flex-col justify-between bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200`}
+      className={
+        "flex flex-col justify-between h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200"
+      }
     >
-      <div className="flex-1 flex flex-col">{renderTabContent()}</div>
+      {renderTabContent()}
       <Navbar activeTab={activeTab} onTabChange={setActiveTab} />
     </div>
   );

@@ -28,7 +28,7 @@ const TaskList: React.FC = () => {
         {!isAddingTask && (
           <button
             onClick={() => setIsAddingTask(true)}
-            className="flex items-center text-sm p-2 rounded-full transition-colors"
+            className="flex items-center text-sm pr-2 rounded-full transition-colors"
             style={{ color: appSettings.theme }}
           >
             <Plus size={20} />
@@ -69,7 +69,7 @@ const TaskList: React.FC = () => {
 
       <div className="space-y-2">
         {tasks.length === 0 && !isAddingTask ? (
-          <p className="text-center text-gray-500 dark:text-gray-400 text-sm py-4">
+          <p className="text-center text-gray-500 dark:text-gray-400 text-sm pb-4">
             No tasks yet. Add one to get started!
           </p>
         ) : (
