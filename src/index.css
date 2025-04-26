@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .bottom-tg-safe {
+    bottom: var(--tg-safe-area-inset-bottom, 0);
+  }
+}
+
 html {
   position: fixed;
   height: auto !important;
