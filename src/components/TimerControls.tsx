@@ -1,6 +1,6 @@
-import React from 'react';
-import { Play, Pause, RotateCcw, SkipForward } from 'lucide-react';
-import { useApp } from '../context/AppContext';
+import React from "react";
+import { Play, Pause, RotateCcw, SkipForward } from "lucide-react";
+import { useApp } from "../context/AppContext";
 
 const TimerControls: React.FC = () => {
   const { timerState, startTimer, pauseTimer, resetTimer, skipTimer, appSettings } = useApp();
@@ -17,24 +17,20 @@ const TimerControls: React.FC = () => {
       >
         <RotateCcw size={20} />
       </button>
-      
+
       {/* Play/Pause button */}
       <button
         onClick={timerState.isActive ? pauseTimer : startTimer}
         className="p-5 rounded-full shadow-lg transition-colors"
-        style={{ 
+        style={{
           backgroundColor: appSettings.theme,
-          color: 'white'
+          color: "white",
         }}
         aria-label={timerState.isActive ? "Pause timer" : "Start timer"}
       >
-        {timerState.isActive ? (
-          <Pause size={28} />
-        ) : (
-          <Play size={28} className="ml-1" />
-        )}
+        {timerState.isActive ? <Pause size={28} /> : <Play size={28} className="ml-1" />}
       </button>
-      
+
       {/* Skip button */}
       <button
         onClick={skipTimer}

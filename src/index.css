@@ -26,10 +26,3 @@ html, body {
   padding-top: calc(var(--tg-safe-area-inset-top) + var(--tg-content-safe-area-inset-top));
   padding-bottom: var(--tg-safe-area-inset-bottom);
 }
-
-.navbar__container {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: var(--tg-safe-area-inset-bottom);
-}

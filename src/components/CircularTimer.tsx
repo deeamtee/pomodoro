@@ -1,59 +1,50 @@
-import React, { useMemo } from 'react';
-import { useApp } from '../context/AppContext';
-import { formatTime } from '../utils/timeUtils';
+import React, { useMemo } from "react";
+import { useApp } from "../context/AppContext";
+import { formatTime } from "../utils/timeUtils";
 
 interface CircularTimerProps {
   size?: number;
   strokeWidth?: number;
 }
 
-const CircularTimer: React.FC<CircularTimerProps> = ({ 
-  size = 250, 
-  strokeWidth = 12 
-}) => {
+const CircularTimer: React.FC<CircularTimerProps> = ({ size = 250, strokeWidth = 12 }) => {
   const { timerState, timerSettings, appSettings } = useApp();
-  
-  // Calculate total seconds for current mode
+
   const totalSeconds = useMemo(() => {
     switch (timerState.mode) {
-      case 'work':
+      case "work":
         return timerSettings.workMinutes * 60;
-      case 'shortBreak':
+      case "shortBreak":
         return timerSettings.shortBreakMinutes * 60;
-      case 'longBreak':
+      case "longBreak":
         return timerSettings.longBreakMinutes * 60;
     }
   }, [timerState.mode, timerSettings]);
 
-  // Calculate progress percentage
   const progress = useMemo(() => {
-    return 1 - (timerState.timeRemaining / totalSeconds);
+    return 1 - timerState.timeRemaining / totalSeconds;
   }, [timerState.timeRemaining, totalSeconds]);
-  
-  // Calculate circle properties
+
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference * (1 - progress);
-  
-  // Format time display
+
   const { minutes, seconds } = formatTime(timerState.timeRemaining);
-  
-  // Style based on current mode
+
   const getModeLabel = () => {
     switch (timerState.mode) {
-      case 'work':
-        return 'Focus';
-      case 'shortBreak':
-        return 'Short Break';
-      case 'longBreak':
-        return 'Long Break';
+      case "work":
+        return "Focus";
+      case "shortBreak":
+        return "Short Break";
+      case "longBreak":
+        return "Long Break";
     }
   };
 
   return (
     <div className="flex flex-col items-center justify-center">
       <div className="relative flex items-center justify-center" style={{ width: size, height: size }}>
-        {/* Background circle */}
         <svg width={size} height={size} className="absolute">
           <circle
             cx={size / 2}
@@ -65,8 +56,7 @@ const CircularTimer: React.FC<CircularTimerProps> = ({
             className="text-gray-200 dark:text-gray-700"
           />
         </svg>
-        
-        {/* Progress circle */}
+
         <svg width={size} height={size} className="absolute -rotate-90">
           <circle
             cx={size / 2}
@@ -79,23 +69,18 @@ const CircularTimer: React.FC<CircularTimerProps> = ({
             strokeDashoffset={strokeDashoffset}
             strokeLinecap="round"
             className="transition-all duration-300 ease-linear"
-            style={{ 
-              stroke: appSettings.theme 
+            style={{
+              stroke: appSettings.theme,
             }}
           />
         </svg>
-        
-        {/* Timer display */}
+
         <div className="flex flex-col items-center justify-center text-center z-10">
           <span className="text-5xl font-bold tracking-tighter text-gray-800 dark:text-white">
             {minutes}:{seconds}
           </span>
-          <span className="mt-1 text-sm font-medium text-gray-600 dark:text-gray-300">
-            {getModeLabel()}
-          </span>
-          <span className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-            Session {timerState.currentSession}
-          </span>
+          <span className="mt-1 text-sm font-medium text-gray-600 dark:text-gray-300">{getModeLabel()}</span>
+          <span className="mt-1 text-xs text-gray-500 dark:text-gray-400">Session {timerState.currentSession}</span>
         </div>
       </div>
     </div>

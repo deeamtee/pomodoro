@@ -35,8 +35,8 @@ const AppContent: React.FC = () => {
     }
   }, [appSettings.darkMode]);
 
-  // Render active tab content
-  const renderTabContent = () => {
+
+  const TabContent = () => {
     switch (activeTab) {
       case "timer":
         return (
@@ -48,13 +48,13 @@ const AppContent: React.FC = () => {
         );
       case "tasks":
         return (
-          <div className="pb-20 pt-4 overflow-auto">
+          <div className="pb-20 pt-4 h-full overflow-scroll no-scrollbar flex flex-col">
             <TaskList />
           </div>
         );
       case "settings":
         return (
-          <div className="pb-20 pt-4 overflow-auto">
+          <div className="pb-20 pt-4 h-full overflow-scroll no-scrollbar flex flex-col">
             <Settings />
           </div>
         );
@@ -66,10 +66,10 @@ const AppContent: React.FC = () => {
   return (
     <div
       className={
-        "flex flex-col justify-between bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200 root"
+        "flex flex-col h-screen justify-between bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200 root"
       }
     >
-      {renderTabContent()}
+      <TabContent/>
       <Navbar activeTab={activeTab} onTabChange={setActiveTab} />
     </div>
   );
