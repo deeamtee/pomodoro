@@ -7,12 +7,11 @@ import TaskList from "./components/TaskList";
 import Settings from "./components/Settings";
 import Navbar from "./components/Navbar";
 import { useApp } from "./context/AppContext";
-import { initTelegramWebApp } from "./utils/telegramUtils";
+import { useTelegram } from "./utils/useTelegram";
 
 // Main app with providers
 function App() {
-  // Initialize Telegram Web App connection once at the root level
-  const telegramData = initTelegramWebApp();
+  const telegramData = useTelegram();
 
   return (
     <AppProvider initialTelegramData={telegramData}>
@@ -21,12 +20,10 @@ function App() {
   );
 }
 
-// App content that can access context
 const AppContent: React.FC = () => {
   const [activeTab, setActiveTab] = useState("timer");
   const { appSettings } = useApp();
 
-  // Apply dark mode class to the body
   useEffect(() => {
     if (appSettings.darkMode) {
       document.documentElement.classList.add("dark");
