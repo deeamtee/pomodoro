@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { Task, TimerSettings, AppSettings, TimerState, TimerMode } from '../types';
+import { usePersistentTasks } from '../utils/usePersistentTasks';
 
 interface AppContextType {
   tasks: Task[];
@@ -76,7 +77,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children, initialTeleg
     };
   };
 
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [tasks, setTasks] = usePersistentTasks([]);
   const [timerSettings, setTimerSettings] = useState<TimerSettings>(defaultTimerSettings);
   const [appSettings, setAppSettings] = useState<AppSettings>(loadAppSettings);
   const [timerState, setTimerState] = useState<TimerState>(defaultTimerState);
