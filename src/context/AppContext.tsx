@@ -135,17 +135,31 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children, initialTeleg
         // Telegram vibration (if available)
         if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
           try {
+            // Более длинная вибрация через Telegram WebApp (несколько событий подряд)
             window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
-          } catch (e) {
-            // fallback to sound
+            setTimeout(() => {
+              window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+            }, 300);
+            setTimeout(() => {
+              window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+            }, 600);
+          } catch {
+            // fallback
           }
         } else if (navigator.vibrate) {
-          // Browser vibration fallback
-          navigator.vibrate(300);
+          // Более длинная вибрация в браузере
+          navigator.vibrate([400, 100, 400, 100, 400]);
         }
-        // Always play sound in browser (if not in Telegram or vibration not available)
-        const audio = new window.Audio('https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3');
-        audio.play().catch(e => console.error('Error playing sound:', e));
+        // Попытка воспроизвести звук (сначала остановить, потом play)
+        try {
+          const audio = new window.Audio('https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3');
+          audio.currentTime = 0;
+          audio.play().catch(() => {
+            // Попробовать другой звук, если не сработало
+            const altAudio = new window.Audio('https://cdn.pixabay.com/audio/2022/07/26/audio_124bfa1c7b.mp3');
+            altAudio.play().catch(() => {});
+          });
+        } catch {}
       }
     }
 
