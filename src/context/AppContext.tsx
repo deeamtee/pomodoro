@@ -187,7 +187,11 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children, initialTeleg
   const toggleTaskCompletion = (id: string) => {
     setTasks(prev => 
       prev.map(task => 
-        task.id === id ? { ...task, completed: !task.completed } : task
+        task.id === id 
+          ? task.completed
+            ? { ...task, completed: false, completed_at: undefined }
+            : { ...task, completed: true, completed_at: new Date() }
+          : task
       )
     );
   };

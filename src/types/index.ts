@@ -3,6 +3,7 @@ export interface Task {
   title: string;
   completed: boolean;
   createdAt: Date;
+  completed_at?: Date;
 }
 
 export interface TimerSettings {
