@@ -17,6 +17,10 @@ interface AppContextType {
   resetTimer: () => void;
   skipTimer: () => void;
   setTimerMode: (mode: TimerMode) => void;
+  setCompletedCollapsed: (collapsed: boolean) => void;
+  completedCollapsed: boolean;
+  setShowAllCompleted: (show: boolean) => void;
+  showAllCompleted: boolean;
 }
 
 interface TelegramData {
@@ -81,6 +85,8 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children, initialTeleg
   const [timerSettings, setTimerSettings] = useState<TimerSettings>(defaultTimerSettings);
   const [appSettings, setAppSettings] = useState<AppSettings>(loadAppSettings);
   const [timerState, setTimerState] = useState<TimerState>(defaultTimerState);
+  const [completedCollapsed, setCompletedCollapsed] = useState(true);
+  const [showAllCompleted, setShowAllCompleted] = useState(false);
 
   // Save appSettings to localStorage on change
   useEffect(() => {
@@ -287,6 +293,10 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children, initialTeleg
         resetTimer,
         skipTimer,
         setTimerMode,
+        setCompletedCollapsed,
+        completedCollapsed,
+        setShowAllCompleted,
+        showAllCompleted,
       }}
     >
       {children}

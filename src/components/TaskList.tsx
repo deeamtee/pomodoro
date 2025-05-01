@@ -10,11 +10,19 @@ function formatDate(date?: Date) {
 }
 
 const TaskList: React.FC = () => {
-  const { tasks, addTask, toggleTaskCompletion, deleteTask, appSettings } = useApp();
+  const {
+    tasks,
+    addTask,
+    toggleTaskCompletion,
+    deleteTask,
+    appSettings,
+    completedCollapsed,
+    setCompletedCollapsed,
+    showAllCompleted,
+    setShowAllCompleted,
+  } = useApp();
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [isAddingTask, setIsAddingTask] = useState(false);
-  const [showAllCompleted, setShowAllCompleted] = useState(false);
-  const [completedCollapsed, setCompletedCollapsed] = useState(true);
 
   const activeTasks = tasks.filter((t) => !t.completed);
   const completedTasks = tasks
