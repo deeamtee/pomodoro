@@ -130,8 +130,20 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children, initialTeleg
   useEffect(() => {
     let interval: number | undefined;
 
-    function playSound() {
+    function playSoundOrVibrate() {
       if (appSettings.soundEnabled) {
+        // Telegram vibration (if available)
+        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
+          try {
+            window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+          } catch (e) {
+            // fallback to sound
+          }
+        } else if (navigator.vibrate) {
+          // Browser vibration fallback
+          navigator.vibrate(300);
+        }
+        // Always play sound in browser (if not in Telegram or vibration not available)
         const audio = new window.Audio('https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3');
         audio.play().catch(e => console.error('Error playing sound:', e));
       }
@@ -167,7 +179,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children, initialTeleg
         }));
       }, 1000);
     } else if (timerState.timeRemaining === 0) {
-      playSound();
+      playSoundOrVibrate();
       handleTimerComplete();
     }
 
